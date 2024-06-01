@@ -2,13 +2,20 @@
 # see: https://developers.google.com/idx/guides/customize-idx-env
 { pkgs, ... }: {
   # Which nixpkgs channel to use.
-  channel = "stable-23.11"; # or "unstable"
+  channel = "unstable";
   # Use https://search.nixos.org/packages to find packages
   packages = [
-    pkgs.go
+    pkgs.go_1_22
     pkgs.nodejs_20
     pkgs.nodePackages.nodemon
+    pkgs.gnumake
+    pkgs.docker-compose
   ];
+  services = {
+    docker = {
+      enable = true;
+    };
+  };
   # Sets environment variables in the workspace
   env = {};
   idx = {
@@ -16,21 +23,12 @@
     extensions = [
       "golang.go"
     ];
-    # Enable previews and customize configuration
-    previews = {
-      enable = true;
-      previews = {
-        web = {
-          command = [
-            "nodemon"
-            "--signal" "SIGHUP"
-            "-w" "."
-            "-e" "go,html"
-            "-x" "go run server.go -addr localhost:$PORT"
-          ];
-          manager = "web";
-        };
+     workspace = {
+        onStart = {
+        # Example: start a background task to watch and re-build backend code
+        # watch-backend = "npm run watch-backend";
+        dependencies = "go mod tidy";
       };
-    };
+     };
   };
 }
