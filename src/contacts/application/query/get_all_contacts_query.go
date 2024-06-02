@@ -1,4 +1,4 @@
-package command
+package query
 
 import (
 	"context"
@@ -6,16 +6,16 @@ import (
 	"github.com/fmcarrero/contacts-api/src/contacts/domain/repository"
 )
 
-type GetAllContactsCommand struct {
+type GetAllContactsQuery struct {
 	ContactRepository repository.ContactRepository
 }
 
-func NewGetAllContacts(contactRepository repository.ContactRepository) GetAllContactsCommand {
-	return GetAllContactsCommand{
+func NewGetAllContacts(contactRepository repository.ContactRepository) GetAllContactsQuery {
+	return GetAllContactsQuery{
 		ContactRepository: contactRepository,
 	}
 }
 
-func (c GetAllContactsCommand) Execute(ctx context.Context) ([]domain.Contact, error) {
+func (c GetAllContactsQuery) Execute(ctx context.Context) ([]domain.Contact, error) {
 	return c.ContactRepository.GetAllContacts(ctx)
 }

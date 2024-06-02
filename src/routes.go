@@ -9,4 +9,6 @@ func (s *Server) Routes() {
 	rootPrefix := s.Server.Group(fmt.Sprintf("/%s/contacts", v1))
 
 	rootPrefix.GET("", s.dependencies.ContactHandler.GetContacts)
+	rootPrefix.POST("", s.dependencies.ContactHandler.AddContact)
+	rootPrefix.PUT("/:id", s.dependencies.ContactHandler.EditContact)
 }

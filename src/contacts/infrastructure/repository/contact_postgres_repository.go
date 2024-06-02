@@ -4,20 +4,56 @@ import (
 	"context"
 	"github.com/fmcarrero/contacts-api/src/contacts/domain"
 	"github.com/fmcarrero/contacts-api/src/contacts/domain/repository"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"go.uber.org/zap"
 )
 
 type contactRepository struct {
-	conn   *pgx.Conn
+	conn   *pgxpool.Pool
 	logger *zap.Logger
 }
 
-func NewContactRepository(conn *pgx.Conn, logger *zap.Logger) repository.ContactRepository {
+func (c contactRepository) AddContact(ctx context.Context, contact domain.Contact) error {
+	_, err := c.conn.Exec(ctx,
+		"insert into contacts(id, full_name, phone_number, email, created_at, update_at) values($1, $2, $3, $4, $5, $6)",
+		contact.ID, contact.FullName, contact.PhoneNumber, contact.Email, contact.CreatedAt, contact.UpdateAt,
+	)
+	if err != nil {
+		c.logger.Error("Error adding contact", zap.Error(err), zap.Any("contact", contact))
+		return err
+	}
+	return nil
+}
+
+func NewContactRepository(conn *pgxpool.Pool, logger *zap.Logger) repository.ContactRepository {
 	return contactRepository{
 		conn:   conn,
 		logger: logger,
 	}
+}
+func (c contactRepository) GetContactByID(ctx context.Context, id int64) (domain.Contact, error) {
+	var contactResult contact
+	err := c.conn.QueryRow(ctx, "SELECT c.id, c.full_name, c.phone_number, c.email, c.created_at FROM contacts c WHERE c.id=$1", id).Scan(
+		&contactResult.ID, &contactResult.FullName, &contactResult.PhoneNumber, &contactResult.Email, &contactResult.CreatedAt,
+	)
+	if err != nil {
+		c.logger.Error("Error getting contact", zap.Error(err), zap.Int64("id", id))
+		return domain.Contact{}, err
+	}
+	return c.mapper(contactResult), nil
+
+}
+
+func (c contactRepository) EditContact(ctx context.Context, contact domain.Contact) error {
+	_, err := c.conn.Exec(ctx,
+		"update contacts set full_name=$2, phone_number=$3, email=$4, update_at=$5 where id=$1",
+		contact.ID, contact.FullName, contact.PhoneNumber, contact.Email, contact.UpdateAt,
+	)
+	if err != nil {
+		c.logger.Error("Error updating contact", zap.Error(err), zap.Int64("id", contact.ID))
+		return err
+	}
+	return nil
 }
 func (c contactRepository) GetAllContacts(ctx context.Context) ([]domain.Contact, error) {
 	var result []contact
