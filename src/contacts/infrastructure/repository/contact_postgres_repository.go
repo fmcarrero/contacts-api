@@ -2,8 +2,12 @@ package repository
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"github.com/fmcarrero/contacts-api/src/contacts/domain"
+	customError "github.com/fmcarrero/contacts-api/src/contacts/domain/error"
 	"github.com/fmcarrero/contacts-api/src/contacts/domain/repository"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"go.uber.org/zap"
 )
@@ -46,6 +50,9 @@ func (c contactRepository) GetContactByID(ctx context.Context, id int64) (domain
 		&contactResult.ID, &contactResult.FullName, &contactResult.PhoneNumber, &contactResult.Email, &contactResult.CreatedAt,
 	)
 	if err != nil {
+		if errors.As(err, &pgx.ErrNoRows) {
+			return domain.Contact{}, customError.NewContactNotFoundError(fmt.Sprintf("Contact with id %d not found", id), "contact.not_found")
+		}
 		c.logger.Error("Error getting contact", zap.Error(err), zap.Int64("id", id))
 		return domain.Contact{}, err
 	}

@@ -18,7 +18,7 @@ type Dependencies struct {
 	conn           *pgxpool.Pool
 }
 
-func (d Dependencies) Close() {
+func (d Dependencies) CloseDatabase() {
 	if d.conn != nil {
 		d.conn.Close()
 	}

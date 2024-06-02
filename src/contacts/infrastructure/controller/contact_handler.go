@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/fmcarrero/contacts-api/src/contacts/application/command"
 	"github.com/fmcarrero/contacts-api/src/contacts/application/query"
+	errors "github.com/fmcarrero/contacts-api/src/contacts/domain/error"
 	"github.com/fmcarrero/contacts-api/src/contacts/infrastructure/controller/dto"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -39,11 +40,14 @@ func (c contactHandler) RemoveContact(ctx echo.Context) error {
 
 	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid id %s, id should be numeric", ctx.Param("id")))
+		err = errors.NewContactValidationError(fmt.Sprintf("Invalid id '%s', id should be numeric", ctx.Param("id")), "contact.validation.id.format.error")
+		ctx.Error(err)
+		return nil
 	}
 	contact, err := c.RemoveContactCommand.Executess(ctx.Request().Context(), id)
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, err.Error())
+		ctx.Error(err)
+		return nil
 	}
 	return ctx.JSON(http.StatusOK, contact)
 }
@@ -52,11 +56,13 @@ func (c contactHandler) AddContact(ctx echo.Context) error {
 	var addContactRequest command.AddContactRequest
 	err := ctx.Bind(&addContactRequest)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest)
+		ctx.Error(err)
+		return nil
 	}
 	contact, err := c.AddContactCommand.Executes(ctx.Request().Context(), addContactRequest)
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, err.Error())
+		ctx.Error(err)
+		return nil
 	}
 	return ctx.JSON(http.StatusCreated, contact)
 }
@@ -64,18 +70,21 @@ func (c contactHandler) EditContact(ctx echo.Context) error {
 	var editContactRequest command.EditContactRequest
 	err := ctx.Bind(&editContactRequest)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest)
+		ctx.Error(err)
+		return nil
 	}
 	contact, err := c.EditContactCommand.Execute(ctx.Request().Context(), editContactRequest)
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, err.Error())
+		ctx.Error(err)
+		return nil
 	}
 	return ctx.JSON(http.StatusOK, contact)
 }
 func (c contactHandler) GetContacts(ctx echo.Context) error {
 	contacts, err := c.GetAllContactsQuery.Execute(ctx.Request().Context())
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, err)
+		ctx.Error(err)
+		return nil
 	}
 	return ctx.JSON(http.StatusOK, dto.ToContactsDTO(contacts))
 }
