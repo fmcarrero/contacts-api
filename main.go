@@ -9,5 +9,4 @@ func main() {
 	server.Middlewares(src.WithRecover(), src.WithRequestID(), src.WithErrorHandler())
 	server.Routes()
 	server.Start()
-
 }

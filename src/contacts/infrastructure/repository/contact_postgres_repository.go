@@ -52,7 +52,7 @@ func (c contactRepository) GetContactByID(ctx context.Context, id int64) (domain
 	)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return domain.Contact{}, customError.NewContactNotFoundError(fmt.Sprintf("Contact with id %d not found", id), "contact.not_found")
+			return domain.Contact{}, customError.NewContactNotFoundError(fmt.Sprintf("contact with id %d not found", id), "contact.not_found")
 		}
 		c.logger.Error("Error getting contact", zap.Error(err), zap.Int64("id", id))
 		return domain.Contact{}, err

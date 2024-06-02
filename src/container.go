@@ -29,7 +29,7 @@ func Build() Dependencies {
 	dependencies := Dependencies{}
 	dependencies.Config = NewConfig()
 	dependencies.Logger, _ = zap.NewProduction()
-	dependencies.conn = getConn(dependencies.Config, dependencies.Logger)
+	dependencies.conn = GetConn(dependencies.Config, dependencies.Logger)
 
 	contactRepository := repository.NewContactRepository(dependencies.conn, dependencies.Logger)
 
@@ -41,7 +41,7 @@ func Build() Dependencies {
 		addContactCommand, removeContactCommand)
 	return dependencies
 }
-func getConn(cfg Config, logger *zap.Logger) *pgxpool.Pool {
+func GetConn(cfg Config, logger *zap.Logger) *pgxpool.Pool {
 	conn, err := pgxpool.New(context.Background(), cfg.Database.URL)
 	if err != nil {
 		logger.Error("Error connecting to database", zap.Error(err))

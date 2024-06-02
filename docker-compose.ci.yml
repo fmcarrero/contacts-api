@@ -2,12 +2,11 @@ services:
   server:
     build:
       context: .
-      target: final
+      target: build
     environment:
+      - ENV=ci
       - PORT=8085
       - DATABASE_URL=postgres://svc_contact:contact_pwd@db:5432/contacts
-    ports:
-      - 8085:8085
     depends_on:
       db:
         condition: service_healthy
@@ -20,8 +19,6 @@ services:
       POSTGRES_USER: svc_contact
     volumes:
       - ./migrations/init.sql:/docker-entrypoint-initdb.d/init.sql
-    ports:
-      - 5432:5432
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -d contacts  -U svc_contact" ]
       interval: 10s
