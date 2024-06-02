@@ -35,7 +35,9 @@ func Build() Dependencies {
 	getAllContacts := query.NewGetAllContacts(contactRepository)
 	editContactCommand := command.NewEditContact(contactRepository)
 	addContactCommand := command.NewAddContact(contactRepository)
-	dependencies.ContactHandler = controller.NewContactHandler(getAllContacts, editContactCommand, addContactCommand)
+	removeContactCommand := command.NewRemoveContact(contactRepository)
+	dependencies.ContactHandler = controller.NewContactHandler(getAllContacts, editContactCommand,
+		addContactCommand, removeContactCommand)
 	return dependencies
 }
 func getConn(cfg Config, logger *zap.Logger) *pgxpool.Pool {

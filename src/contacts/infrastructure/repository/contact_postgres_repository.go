@@ -13,6 +13,13 @@ type contactRepository struct {
 	logger *zap.Logger
 }
 
+func NewContactRepository(conn *pgxpool.Pool, logger *zap.Logger) repository.ContactRepository {
+	return contactRepository{
+		conn:   conn,
+		logger: logger,
+	}
+}
+
 func (c contactRepository) AddContact(ctx context.Context, contact domain.Contact) error {
 	_, err := c.conn.Exec(ctx,
 		"insert into contacts(id, full_name, phone_number, email, created_at, update_at) values($1, $2, $3, $4, $5, $6)",
@@ -25,11 +32,13 @@ func (c contactRepository) AddContact(ctx context.Context, contact domain.Contac
 	return nil
 }
 
-func NewContactRepository(conn *pgxpool.Pool, logger *zap.Logger) repository.ContactRepository {
-	return contactRepository{
-		conn:   conn,
-		logger: logger,
+func (c contactRepository) RemoveContact(ctx context.Context, id int64) error {
+	_, err := c.conn.Exec(ctx, "delete from contacts where id=$1", id)
+	if err != nil {
+		c.logger.Error("Error removing contact", zap.Error(err), zap.Int64("id", id))
+		return err
 	}
+	return nil
 }
 func (c contactRepository) GetContactByID(ctx context.Context, id int64) (domain.Contact, error) {
 	var contactResult contact
@@ -57,7 +66,8 @@ func (c contactRepository) EditContact(ctx context.Context, contact domain.Conta
 }
 func (c contactRepository) GetAllContacts(ctx context.Context) ([]domain.Contact, error) {
 	var result []contact
-	query, err := c.conn.Query(ctx, `SELECT c.id, c.full_name, c.phone_number, c.email, c.created_at 
+	query, err := c.conn.Query(ctx, `SELECT c.id, c.full_name, c.phone_number, c.email, 
+       										c.created_at , c.update_at
 											FROM contacts c
 											order by c.full_name asc`)
 	if err != nil {
@@ -67,7 +77,8 @@ func (c contactRepository) GetAllContacts(ctx context.Context) ([]domain.Contact
 	defer query.Close()
 	for query.Next() {
 		var contactResult contact
-		err = query.Scan(&contactResult.ID, &contactResult.FullName, &contactResult.PhoneNumber, &contactResult.Email, &contactResult.CreatedAt)
+		err = query.Scan(&contactResult.ID, &contactResult.FullName, &contactResult.PhoneNumber, &contactResult.Email,
+			&contactResult.CreatedAt, &contactResult.UpdateAt)
 		if err != nil {
 			c.logger.Error("Error scanning contact", zap.Error(err))
 			return nil, err
@@ -91,5 +102,6 @@ func (c contactRepository) mapper(contactRepository contact) domain.Contact {
 		PhoneNumber: contactRepository.PhoneNumber,
 		Email:       contactRepository.Email,
 		CreatedAt:   contactRepository.CreatedAt,
+		UpdateAt:    contactRepository.UpdateAt,
 	}
 }

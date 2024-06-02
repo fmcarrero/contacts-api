@@ -8,4 +8,5 @@ type contact struct {
 	PhoneNumber string    `json:"phone_number"`
 	Email       string    `json:"email"`
 	CreatedAt   time.Time `json:"created_at"`
+	UpdateAt    time.Time `json:"update_at"`
 }
