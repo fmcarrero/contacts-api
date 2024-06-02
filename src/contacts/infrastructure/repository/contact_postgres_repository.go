@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+
 	"github.com/fmcarrero/contacts-api/src/contacts/domain"
 	customError "github.com/fmcarrero/contacts-api/src/contacts/domain/error"
 	"github.com/fmcarrero/contacts-api/src/contacts/domain/repository"
@@ -50,7 +51,7 @@ func (c contactRepository) GetContactByID(ctx context.Context, id int64) (domain
 		&contactResult.ID, &contactResult.FullName, &contactResult.PhoneNumber, &contactResult.Email, &contactResult.CreatedAt,
 	)
 	if err != nil {
-		if errors.As(err, &pgx.ErrNoRows) {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return domain.Contact{}, customError.NewContactNotFoundError(fmt.Sprintf("Contact with id %d not found", id), "contact.not_found")
 		}
 		c.logger.Error("Error getting contact", zap.Error(err), zap.Int64("id", id))

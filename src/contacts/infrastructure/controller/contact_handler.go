@@ -44,7 +44,7 @@ func (c contactHandler) RemoveContact(ctx echo.Context) error {
 		ctx.Error(err)
 		return nil
 	}
-	contact, err := c.RemoveContactCommand.Executess(ctx.Request().Context(), id)
+	contact, err := c.RemoveContactCommand.Execute(ctx.Request().Context(), id)
 	if err != nil {
 		ctx.Error(err)
 		return nil
@@ -59,7 +59,7 @@ func (c contactHandler) AddContact(ctx echo.Context) error {
 		ctx.Error(err)
 		return nil
 	}
-	contact, err := c.AddContactCommand.Executes(ctx.Request().Context(), addContactRequest)
+	contact, err := c.AddContactCommand.Execute(ctx.Request().Context(), addContactRequest)
 	if err != nil {
 		ctx.Error(err)
 		return nil

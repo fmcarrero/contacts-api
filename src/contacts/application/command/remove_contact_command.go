@@ -16,7 +16,7 @@ func NewRemoveContact(contactRepository repository.ContactRepository) RemoveCont
 	}
 }
 
-func (c RemoveContactCommand) Executess(ctx context.Context, id int64) (domain.Contact, error) {
+func (c RemoveContactCommand) Execute(ctx context.Context, id int64) (domain.Contact, error) {
 	contact, err := c.ContactRepository.GetContactByID(ctx, id)
 	if err != nil {
 		return domain.Contact{}, err

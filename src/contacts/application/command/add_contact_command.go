@@ -23,7 +23,7 @@ type AddContactRequest struct {
 	PhoneNumber string `json:"phone_number"`
 }
 
-func (c AddContactCommand) Executes(ctx context.Context, request AddContactRequest) (domain.Contact, error) {
+func (c AddContactCommand) Execute(ctx context.Context, request AddContactRequest) (domain.Contact, error) {
 	contact, err := domain.NewContact(snowflake.NewSnowflakeID(), request.FullName, request.PhoneNumber, request.Email)
 	if err != nil {
 		return domain.Contact{}, err

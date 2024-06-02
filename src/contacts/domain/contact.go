@@ -2,9 +2,10 @@ package domain
 
 import (
 	"fmt"
-	errors "github.com/fmcarrero/contacts-api/src/contacts/domain/error"
 	"regexp"
 	"time"
+
+	errors "github.com/fmcarrero/contacts-api/src/contacts/domain/error"
 )
 
 type Contact struct {
@@ -17,7 +18,6 @@ type Contact struct {
 }
 
 func NewContact(id int64, fullName, phoneNumber, email string) (Contact, error) {
-
 	now := time.Now().UTC()
 	contact := Contact{
 		ID:          id,
@@ -52,7 +52,7 @@ func NewContactEdit(id int64, fullName, phoneNumber, email string) (Contact, err
 // Validate validates the email and phone number formats
 func (c *Contact) Validate() error {
 	if c.ID <= 0 {
-		return fmt.Errorf("invalid id %d, id should be greather than 0", c.ID)
+		return errors.NewContactValidationError(fmt.Sprintf("invalid id %d, id should be greater than 0", c.ID), "contact.validation.id.error")
 	}
 	if c.FullName == "" {
 		return errors.NewContactValidationError("invalid fullName, fullName should not be empty", "contact.validation.full_name_empty.error")

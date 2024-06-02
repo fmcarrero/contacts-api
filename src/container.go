@@ -2,6 +2,7 @@ package src
 
 import (
 	"context"
+
 	"github.com/fmcarrero/contacts-api/src/contacts/application/command"
 	"github.com/fmcarrero/contacts-api/src/contacts/application/query"
 	"github.com/fmcarrero/contacts-api/src/contacts/infrastructure/controller"
@@ -42,6 +43,11 @@ func Build() Dependencies {
 }
 func getConn(cfg Config, logger *zap.Logger) *pgxpool.Pool {
 	conn, err := pgxpool.New(context.Background(), cfg.Database.URL)
+	if err != nil {
+		logger.Error("Error connecting to database", zap.Error(err))
+		panic(err)
+	}
+	err = conn.Ping(context.Background())
 	if err != nil {
 		logger.Error("Error connecting to database", zap.Error(err))
 		panic(err)
