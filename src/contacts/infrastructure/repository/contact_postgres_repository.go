@@ -57,7 +57,9 @@ func (c contactRepository) EditContact(ctx context.Context, contact domain.Conta
 }
 func (c contactRepository) GetAllContacts(ctx context.Context) ([]domain.Contact, error) {
 	var result []contact
-	query, err := c.conn.Query(ctx, "SELECT c.id, c.full_name, c.phone_number, c.email, c.created_at FROM contacts c")
+	query, err := c.conn.Query(ctx, `SELECT c.id, c.full_name, c.phone_number, c.email, c.created_at 
+											FROM contacts c
+											order by c.full_name asc`)
 	if err != nil {
 		c.logger.Error("Error getting contacts", zap.Error(err))
 		return nil, err
