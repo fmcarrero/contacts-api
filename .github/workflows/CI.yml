@@ -1,5 +1,4 @@
 name: CI
-
 on:
   push:
     branches:
@@ -16,10 +15,8 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: 1.22
-
       - name: Build
         run: go build .
-
       - name: Run tests
         run: make unit_test
 
@@ -30,6 +27,9 @@ jobs:
         run: make docker-integration-tests
 
       - name: Run acceptance tests
+        env:
+          DOCKER_BUILDKIT: 1
+          COMPOSE_DOCKER_CLI_BUILD: 1
         run: make docker-acceptance-tests
 
       - name: Docker compose down
