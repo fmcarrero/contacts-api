@@ -24,6 +24,9 @@ jobs:
         run: make unit_test
 
       - name: Run integration tests
+        env:
+          DOCKER_BUILDKIT: 1
+          COMPOSE_DOCKER_CLI_BUILD: 1
         run: make docker-integration-tests
 
       - name: Run acceptance tests
