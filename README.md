@@ -10,6 +10,7 @@
 [![Docker](https://img.shields.io/badge/Container-Docker-2496ED.svg)](https://www.docker.com/)
 
 [![Apache 2.0 License](https://img.shields.io/badge/License-Apache%202.0-orange)](./LICENSE)
+[![CI](https://github.com/fmcarrero/contacts-api/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/fmcarrero/payments/actions/workflows/CI.yml)
 ![GO 1.22](https://img.shields.io/badge/go-1.22-blue)
 </div>
 
