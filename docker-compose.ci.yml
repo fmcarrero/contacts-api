@@ -4,6 +4,7 @@ services:
       context: .
       target: build
     environment:
+      - DOCKER_BUILDKIT=1
       - ENV=ci
       - PORT=8085
       - DATABASE_URL=postgres://svc_contact:contact_pwd@db_test:5432/contacts?timezone=UTC
