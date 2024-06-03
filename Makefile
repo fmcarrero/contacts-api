@@ -5,7 +5,7 @@ integration-tests:
 	go test ./tests/integration -v -coverpkg=./...
 
 docker-integration-tests:
-	docker-compose -f docker-compose.ci.yml run --build --rm server make integration-tests
+	docker-compose -f docker-compose.ci.yml run --build --rm server sh -c "make integration-tests"
 
 docker-unit-tests:
 	docker-compose -f docker-compose.ci.yml run --build -e ENV="" --rm server make unit_test \
