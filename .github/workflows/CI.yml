@@ -31,4 +31,4 @@ jobs:
 
       - name: Docker compose down
         if: always()
-        run: docker-compose -f Docker-compose.ci.yml down
+        run: docker-compose -f docker-compose.ci.yml down
