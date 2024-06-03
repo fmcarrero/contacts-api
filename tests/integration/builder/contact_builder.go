@@ -1,4 +1,4 @@
-package builders
+package builder
 
 import (
 	"github.com/fmcarrero/contacts-api/pkg/snowflake"

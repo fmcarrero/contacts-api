@@ -9,7 +9,7 @@ import (
 	"github.com/fmcarrero/contacts-api/src"
 	customError "github.com/fmcarrero/contacts-api/src/contacts/domain/error"
 	"github.com/fmcarrero/contacts-api/src/contacts/infrastructure/repository"
-	"github.com/fmcarrero/contacts-api/tests/integrations/builders"
+	"github.com/fmcarrero/contacts-api/tests/integration/builder"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
 )
@@ -48,7 +48,7 @@ func TestGetContactById(t *testing.T) {
 
 	t.Run("Should return a contact by id", func(t *testing.T) {
 		//prepare
-		contact, _ := builders.NewContactBuilder().Build()
+		contact, _ := builder.NewContactBuilder().Build()
 		assert.NoError(t, instance.AddContact(context.Background(), contact))
 		defer instance.RemoveContact(context.Background(), contact.ID)
 
@@ -71,7 +71,7 @@ func TestAddContact(t *testing.T) {
 
 	t.Run("Should return an error adding contact", func(t *testing.T) {
 		ctx := context.Background()
-		contact, _ := builders.NewContactBuilder().WithID(-2).Build()
+		contact, _ := builder.NewContactBuilder().WithID(-2).Build()
 		err := instance.AddContact(ctx, contact)
 
 		assert.Error(t, err)
@@ -80,7 +80,7 @@ func TestAddContact(t *testing.T) {
 
 	t.Run("Should add a contact", func(t *testing.T) {
 		ctx := context.Background()
-		contact, _ := builders.NewContactBuilder().Build()
+		contact, _ := builder.NewContactBuilder().Build()
 		defer instance.RemoveContact(ctx, contact.ID)
 
 		err := instance.AddContact(ctx, contact)
@@ -104,7 +104,7 @@ func TestRemoveContact(t *testing.T) {
 
 	t.Run("Should remove a contact", func(t *testing.T) {
 		ctx := context.Background()
-		contact, _ := builders.NewContactBuilder().Build()
+		contact, _ := builder.NewContactBuilder().Build()
 		assert.NoError(t, instance.AddContact(ctx, contact))
 
 		err := instance.RemoveContact(ctx, contact.ID)
@@ -123,7 +123,7 @@ func TestEditContact(t *testing.T) {
 
 	t.Run("Should return an error editing contact", func(t *testing.T) {
 		ctx := context.Background()
-		contact, _ := builders.NewContactBuilder().Build()
+		contact, _ := builder.NewContactBuilder().Build()
 		assert.NoError(t, instance.AddContact(ctx, contact))
 		contact.FullName = ""
 		defer instance.RemoveContact(ctx, contact.ID)
@@ -136,7 +136,7 @@ func TestEditContact(t *testing.T) {
 
 	t.Run("Should edit a contact", func(t *testing.T) {
 		ctx := context.Background()
-		contact, _ := builders.NewContactBuilder().Build()
+		contact, _ := builder.NewContactBuilder().Build()
 		assert.NoError(t, instance.AddContact(ctx, contact))
 		defer instance.RemoveContact(ctx, contact.ID)
 
