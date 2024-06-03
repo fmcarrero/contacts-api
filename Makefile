@@ -14,4 +14,4 @@ acceptance-tests:
 	go test ./tests/acceptance -v -coverpkg=./...
 
 docker-acceptance-tests:
-	DOCKER_BUILDKIT=1 docker-compose -f docker-compose.ci.yml  --build --rm run server  sh -c "make acceptance-tests"
+	DOCKER_BUILDKIT=1 docker-compose -f docker-compose.ci.yml run server  sh -c "make acceptance-tests"
