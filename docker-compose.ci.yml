@@ -6,7 +6,7 @@ services:
     environment:
       - ENV=ci
       - PORT=8085
-      - DATABASE_URL=postgres://svc_contact:contact_pwd@db:5432/contacts
+      - DATABASE_URL=postgres://svc_contact:contact_pwd@db:5432/contacts?timezone=UTC
     depends_on:
       db:
         condition: service_healthy
@@ -17,6 +17,7 @@ services:
       POSTGRES_DB: contacts
       POSTGRES_PASSWORD: contact_pwd
       POSTGRES_USER: svc_contact
+      TZ: UTC
     volumes:
       - ./migrations/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:

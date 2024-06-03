@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-
 	"github.com/fmcarrero/contacts-api/src/contacts/domain"
 	customError "github.com/fmcarrero/contacts-api/src/contacts/domain/error"
 	"github.com/fmcarrero/contacts-api/src/contacts/domain/repository"
@@ -47,18 +46,20 @@ func (c contactRepository) RemoveContact(ctx context.Context, id int64) error {
 }
 func (c contactRepository) GetContactByID(ctx context.Context, id int64) (domain.Contact, error) {
 	var contactResult contact
-	err := c.conn.QueryRow(ctx, "SELECT c.id, c.full_name, c.phone_number, c.email, c.created_at FROM contacts c WHERE c.id=$1", id).Scan(
-		&contactResult.ID, &contactResult.FullName, &contactResult.PhoneNumber, &contactResult.Email, &contactResult.CreatedAt,
+	err := c.conn.QueryRow(ctx, `SELECT c.id, c.full_name, c.phone_number, c.email,
+       					c.created_at, c.update_at
+						FROM contacts c WHERE c.id=$1`, id).Scan(
+		&contactResult.ID, &contactResult.FullName, &contactResult.PhoneNumber, &contactResult.Email,
+		&contactResult.CreatedAt, &contactResult.UpdateAt,
 	)
 	if err != nil {
+		c.logger.Error("Error getting contact", zap.Error(err), zap.Int64("id", id))
 		if errors.Is(err, pgx.ErrNoRows) {
 			return domain.Contact{}, customError.NewContactNotFoundError(fmt.Sprintf("contact with id %d not found", id), "contact.not_found")
 		}
-		c.logger.Error("Error getting contact", zap.Error(err), zap.Int64("id", id))
 		return domain.Contact{}, err
 	}
 	return c.mapper(contactResult), nil
-
 }
 
 func (c contactRepository) EditContact(ctx context.Context, contact domain.Contact) error {
