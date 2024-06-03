@@ -2,6 +2,7 @@ package src
 
 import (
 	"context"
+	"github.com/fmcarrero/contacts-api/src/ping"
 
 	"github.com/fmcarrero/contacts-api/src/contacts/application/command"
 	"github.com/fmcarrero/contacts-api/src/contacts/application/query"
@@ -14,6 +15,7 @@ import (
 
 type Dependencies struct {
 	ContactHandler controller.ContactHandler
+	HandierPing    ping.HandierPing
 	Config         Config
 	Logger         *zap.Logger
 	Conn           *pgxpool.Pool
@@ -37,6 +39,7 @@ func Build() Dependencies {
 	editContactCommand := command.NewEditContact(contactRepository)
 	addContactCommand := command.NewAddContact(contactRepository)
 	removeContactCommand := command.NewRemoveContact(contactRepository)
+	dependencies.HandierPing = ping.NewHandierPing(dependencies.Config.ProjectName, dependencies.Config.ProjectVersion)
 	dependencies.ContactHandler = controller.NewContactHandler(getAllContacts, editContactCommand,
 		addContactCommand, removeContactCommand)
 	return dependencies
