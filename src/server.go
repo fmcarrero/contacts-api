@@ -21,3 +21,6 @@ func NewServer(dependencies Dependencies) *Server {
 func (s *Server) Start() {
 	s.Server.Logger.Fatal(s.Server.Start(fmt.Sprintf(":%s", s.dependencies.Config.Port)))
 }
+func (s *Server) GetDependencies() Dependencies {
+	return s.dependencies
+}

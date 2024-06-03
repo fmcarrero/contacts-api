@@ -3,13 +3,13 @@ package integration
 import (
 	"context"
 	"fmt"
+	"github.com/fmcarrero/contacts-api/tests/builder"
 	"testing"
 	"time"
 
 	"github.com/fmcarrero/contacts-api/src"
 	customError "github.com/fmcarrero/contacts-api/src/contacts/domain/error"
 	"github.com/fmcarrero/contacts-api/src/contacts/infrastructure/repository"
-	"github.com/fmcarrero/contacts-api/tests/integration/builder"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
 )

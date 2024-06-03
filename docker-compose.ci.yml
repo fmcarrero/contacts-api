@@ -6,11 +6,11 @@ services:
     environment:
       - ENV=ci
       - PORT=8085
-      - DATABASE_URL=postgres://svc_contact:contact_pwd@db:5432/contacts?timezone=UTC
+      - DATABASE_URL=postgres://svc_contact:contact_pwd@db_test:5432/contacts?timezone=UTC
     depends_on:
-      db:
+      db_test:
         condition: service_healthy
-  db:
+  db_test:
     image: postgres
     restart: always
     environment:

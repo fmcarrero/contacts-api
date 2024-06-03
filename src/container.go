@@ -16,12 +16,12 @@ type Dependencies struct {
 	ContactHandler controller.ContactHandler
 	Config         Config
 	Logger         *zap.Logger
-	conn           *pgxpool.Pool
+	Conn           *pgxpool.Pool
 }
 
 func (d Dependencies) CloseDatabase() {
-	if d.conn != nil {
-		d.conn.Close()
+	if d.Conn != nil {
+		d.Conn.Close()
 	}
 }
 
@@ -29,9 +29,9 @@ func Build() Dependencies {
 	dependencies := Dependencies{}
 	dependencies.Config = NewConfig()
 	dependencies.Logger, _ = zap.NewProduction()
-	dependencies.conn = GetConn(dependencies.Config, dependencies.Logger)
+	dependencies.Conn = GetConn(dependencies.Config, dependencies.Logger)
 
-	contactRepository := repository.NewContactRepository(dependencies.conn, dependencies.Logger)
+	contactRepository := repository.NewContactRepository(dependencies.Conn, dependencies.Logger)
 
 	getAllContacts := query.NewGetAllContacts(contactRepository)
 	editContactCommand := command.NewEditContact(contactRepository)
