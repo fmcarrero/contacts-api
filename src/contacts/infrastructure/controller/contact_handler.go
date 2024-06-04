@@ -49,7 +49,7 @@ func (c contactHandler) RemoveContact(ctx echo.Context) error {
 		ctx.Error(err)
 		return nil
 	}
-	return ctx.JSON(http.StatusOK, contact)
+	return ctx.JSON(http.StatusOK, dto.ToContactDTO(contact))
 }
 
 func (c contactHandler) AddContact(ctx echo.Context) error {
@@ -64,7 +64,7 @@ func (c contactHandler) AddContact(ctx echo.Context) error {
 		ctx.Error(err)
 		return nil
 	}
-	return ctx.JSON(http.StatusCreated, contact)
+	return ctx.JSON(http.StatusCreated, dto.ToContactDTO(contact))
 }
 func (c contactHandler) EditContact(ctx echo.Context) error {
 	var editContactRequest command.EditContactRequest
@@ -78,7 +78,7 @@ func (c contactHandler) EditContact(ctx echo.Context) error {
 		ctx.Error(err)
 		return nil
 	}
-	return ctx.JSON(http.StatusOK, contact)
+	return ctx.JSON(http.StatusOK, dto.ToContactDTO(contact))
 }
 func (c contactHandler) GetContacts(ctx echo.Context) error {
 	contacts, err := c.GetAllContactsQuery.Execute(ctx.Request().Context())
