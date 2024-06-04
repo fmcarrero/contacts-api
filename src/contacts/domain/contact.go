@@ -3,6 +3,7 @@ package domain
 import (
 	"fmt"
 	"regexp"
+	"strings"
 	"time"
 
 	errors "github.com/fmcarrero/contacts-api/src/contacts/domain/error"
@@ -21,9 +22,9 @@ func NewContact(id int64, fullName, phoneNumber, email string) (Contact, error) 
 	now := time.Now().UTC()
 	contact := Contact{
 		ID:          id,
-		FullName:    fullName,
-		PhoneNumber: phoneNumber,
-		Email:       email,
+		FullName:    strings.TrimSpace(fullName),
+		PhoneNumber: strings.TrimSpace(phoneNumber),
+		Email:       strings.TrimSpace(email),
 		CreatedAt:   now,
 		UpdateAt:    now,
 	}
@@ -36,9 +37,9 @@ func NewContactEdit(id int64, fullName, phoneNumber, email string) (Contact, err
 
 	contact := Contact{
 		ID:          id,
-		FullName:    fullName,
-		PhoneNumber: phoneNumber,
-		Email:       email,
+		FullName:    strings.TrimSpace(fullName),
+		PhoneNumber: strings.TrimSpace(phoneNumber),
+		Email:       strings.TrimSpace(email),
 		UpdateAt:    time.Now().UTC(),
 	}
 
